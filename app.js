@@ -5,10 +5,10 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const bodyParser = require('body-parser');
 
-
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var moviesRouter = require('./routes/movies')
+var shemaRouter = require('./Models/shema')
 
 var app = express();
 
@@ -23,28 +23,24 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 /* MONGO */
+const mongoose = require('mongoose');
 
-const MongoClient = require('mongodb').MongoClient;
-const assert = require('assert');
+const Shema = require('./Models/shema')
 
-const url = 'mongodb://localhost:27017/';
-const dbname = 'Movies';
+const url = 'mongodb://localhost:27017/abc';
+const connect = mongoose.connect(url);
 
-MongoClient.connect(url, (err, client) => {
+connect.then((db) => {
+  console.log('connect')
+}, (err) => {console.log(err);});
 
-    assert.equal(err, null);
-
-    console.log('Connected correctly to server');
-
-    const db = client.db(dbname);
-    const collection = db.collection("MoviesCollection");
-});
 
 // Routers
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/movies', moviesRouter);
+app.use('/shema', shemaRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

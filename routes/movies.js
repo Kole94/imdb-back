@@ -1,68 +1,63 @@
 var express = require('express');
 const bodyParser = require('body-parser');
+const router = express.Router();
+router.use(bodyParser.json());
+const Q = require('../shared /movies');
 
-const Movies = require('../Models/mongoose')
+/* router.get('/',(req,res,next) => {
+    Movies.find({})
+    .then((movies) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(movies);
+    }, (err) => next(err))
+    .catch((err) => next(err));
+}) */
 
 
-var router = express.Router();
 
-/* GET users listing. */
-router.get('/', (req, res, next) => {
-  res.status(200).json({
-    message: 'MOVIES'
+router.all('/', (req,res,next) => {
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/plain');
+    next();
   });
-});
+  
+  router.get('/', (req,res,next) => {
+      res.end('Will send all the  to you!');
+      console.log(MOVIES)
 
-router.get('/:movieId', (req, res, next) => {
-  const id = req.params.movieId;
-  if(id === 'special'){
-    res.status(200).json({
-      message: 'yes yes yo',
-      id: id
-    });
-  } else {
-    res.status(200).json({
-      message: 'nooo'
-    })
-  }
-});
-
-router.post('/', (req, res, next) => {
-  const movie = new Movies ({
-    name: req.body.name,
-    description: req.body.description
+  });
+  
+  router.post('/', (req, res, next) => {
+   res.end('Will add the dish: ' + req.body.title + ' with details: ' + req.body.rank + ' id : ' + req.body.id);
+  });
+  
+  router.put('/', (req, res, next) => {
+    res.statusCode = 403;
+    res.end('PUT operation not supported on /');
+  });
+   
+  router.delete('/', (req, res, next) => {
+      res.end('Deleting all ');
+  });
+  
+  router.get('/:movieId', (req,res,next) => {
+      res.end('Will send details of the dish: ' + q.MOVIES[req.params.movieId] +' to you!');
+  });
+  
+  router.post('/:movieId', (req, res, next) => {
+    res.statusCode = 403;
+    res.end('POST operation not supported on //'+ MOVIES[req.params.movieId]);
+  });
+  
+  router.put('/:movieId', (req, res, next) => {
+    res.write('Updating the dish: ' + MOVIES[req.params.movieId].title + '\n');
+    res.end('Will update the dish: ' + MOVIES[req.params.movieId].title + 
+          ' with details: ' + MOVIES[req.params.movieId].rank);
+  });
+  
+  router.delete('/:movieId', (req, res, next) => {
+      res.end('Deleting dish: ' + MOVIES.MOVIES[req.params.movieId].title);
   });
 
-  movie
-  .save()
-  .then(result => {
-    console.log(result);
-  })
-  .catch(err => console.log(err));
-
-  res.status(201).json({
-    message: 'yesssss',
-    created: movie
-  })
- });
-
-/* 
-router.get('/:movieId', (req, res, next) => {
-  const id = req.params.movieId;
-  if(id === 'platoon'){
-    res.status(200).json({
-      message: 'platoon',
-      id: id
-    });
-  } else {
-    res.status(200).json({
-      message: 'nooo'
-    })
-  }
-}); 
-
-router.post('/', (req, res, next) => {
-  res.end('Will add the dish: ' + req.body.name + ' with details: ' + req.body.description);
- });  */
- 
 module.exports = router;
