@@ -8,7 +8,6 @@ const bodyParser = require('body-parser');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var moviesRouter = require('./routes/movies')
-var shemaRouter = require('./Models/shema')
 
 var app = express();
 
@@ -23,32 +22,60 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 /* MONGO */
+
 const mongoose = require('mongoose');
 
-const Shema = require('./Models/shema')
 
-const url = 'mongodb://localhost:27017/abc';
-const connect = mongoose.connect(url);
+ /* var newMovie = Movie({
+    movie_title: 'Poslednji Srbin u Hrvatskoj',
+    director_name: 'Predrag Licina',
+    color: 'color',
+    duration: '111',
+    actor_1_name: 'Hristina Popovic',
+    language: 'srpsko hrvatskit',
+    country: 'Croatia',
+    title_year: '2018',
+  });
 
-connect.then((db) => {
-  console.log('connect')
-}, (err) => {console.log(err);});
+  newMovie.save()
+      .then((dish) => {
+          console.log(dish);
+          return Movie.find({});
+      })
+      
+      .then(() => {
+          return mongoose.connection.close();
+      })
+      .catch((err) => {
+          console.log(err);
+      });
 
+}); */
+mongoose.connect('mongodb://localhost:27017/Movies', {useNewUrlParser: true});
+
+var Movie = require('./models/movie')
+
+/* Movie.find({movie_title: 'Titanic'})
+.then((doc) => {
+  console.log(doc)
+})
+.catch(err => {
+  console.error(err)
+}); */
 
 // Routers
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/movies', moviesRouter);
-app.use('/shema', shemaRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
